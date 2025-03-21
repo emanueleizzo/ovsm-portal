@@ -15,6 +15,17 @@ $stmt->execute();
 $result = $stmt->get_result();
 $user = $result->fetch_assoc();
 $stmt->close();
+
+if ($user['ruolo'] !== 'admin') {
+    header("Location: index");
+    exit();
+}
+
+// Recupero tutti gli utenti
+$stmt = $conn->prepare("SELECT id, nome, cognome, foto_profilo, email, ruolo FROM utenti");
+$stmt->execute();
+$utenti_result = $stmt->get_result();
+$stmt->close();
 $conn->close();
 ?>
 
@@ -70,15 +81,31 @@ $conn->close();
 
                 <!-- Contenuto principale -->
                 <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4 d-flex-inline align-items-center justify-content-center position-relative my-5">
-                    <h1>Pagina di amministrazione</h1>
-
-                    <div class="d-flex justify-content-center gap-4 my-4">
-                        <a href="gestione_utenti" class="btn btn-page btn-lg px-5 py-3">Gestione Utenti</a>
-                        <a href="admin_articoli" class="btn btn-page btn-lg px-5 py-3">Gestione Articoli</a>
-                        <a href="admin_report" class="btn btn-page btn-lg px-5 py-3">Gestione Report</a>
-                    </div>  
-
-                    <a href="index" class="btn btn-secondary">Torna alla pagina principale</a>
+                    <h1>Gestione Utenti</h1>
+                    
+                    <!-- Pulsante per aggiungere un nuovo utente -->
+                    <a href="aggiungi_utente" class="btn btn-primary mb-4">Aggiungi Nuovo Utente</a>
+                    
+                    <!-- Tabella degli utenti -->
+                    <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4">
+                        <?php while ($user = $utenti_result->fetch_assoc()): ?>
+                        <div class="col mb-4">
+                            <div class="card align-items-center p-3 user-box">
+                                <img src="<?php echo "uploads/".$user['foto_profilo']; ?>" class="img-fluid rounded-circle" style="width: 100px; height: 100px;" alt="Foto di <?php echo htmlspecialchars($user['nome']); ?>">
+                                <div class="card-body">
+                                    <h5 class="card-title"><?php echo htmlspecialchars($user['nome']) . ' ' . htmlspecialchars($user['cognome']); ?></h5>
+                                    <p class="card-text m-0"><strong>Email:</strong> <?php echo htmlspecialchars($user['email']); ?></p>
+                                    <p class="card-text"><strong>Ruolo:</strong> <?php echo htmlspecialchars($user['ruolo']); ?></p>
+                                    <div class="d-flex justify-content-center">
+                                        <a href="modifica_utente?id=<?php echo $user['id']; ?>" class="btn btn-primary btn-sm">Modifica</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <?php endwhile; ?>
+                    </div>
+                    
+                    <a href="admin" class="btn btn-secondary">Torna alla pagina di amministrazione</a>
                 </main>
             </div>
         </div>
