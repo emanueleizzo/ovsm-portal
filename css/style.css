@@ -73,12 +73,6 @@ button:hover {
     border: 1px solid rgba(255, 255, 255, 0.2);
 }
 
-/* Logo di sfondo */
-.background-logo {
-    background: url('../images/logo.png') no-repeat center;
-    background-size: contain;
-}
-
 .btn-page {
     --bs-btn-color: #fff;
     --bs-btn-bg: #1c2b3a;

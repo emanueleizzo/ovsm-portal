@@ -144,7 +144,7 @@ if ($user['ruolo'] !== 'admin') {
 
                         <img src="<?php echo "uploads/".htmlspecialchars($user['foto_profilo']); ?>" alt="Profilo" class="img-fluid rounded-circle" style="width: 100px; height: 100px;">
                         <h5 class="text-light mt-2"><?php echo htmlspecialchars($user['nome'])." ".htmlspecialchars($user['cognome']); ?></h5>
-                        <a href="profile" class="btn btn-success btn-sm mt-2 w-100">Visualizza profilo</a>
+                        <a href="profilo" class="btn btn-success btn-sm mt-2 w-100">Visualizza profilo</a>
                         <?php if ($user['ruolo'] === 'admin'): ?>
                             <a href="admin" class="btn btn-warning btn-sm mt-2 w-100">Amministrazione</a>
                         <?php endif; ?>

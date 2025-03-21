@@ -57,7 +57,7 @@ $conn->close();
 
                         <img src="<?php echo "uploads/".htmlspecialchars($user['foto_profilo']); ?>" alt="Profilo" class="img-fluid rounded-circle" style="width: 100px; height: 100px;">
                         <h5 class="text-light mt-2"><?php echo htmlspecialchars($user['nome'])." ".htmlspecialchars($user['cognome']); ?></h5>
-                        <a href="profile" class="btn btn-success btn-sm mt-2 w-100">Visualizza profilo</a>
+                        <a href="profilo" class="btn btn-success btn-sm mt-2 w-100">Visualizza profilo</a>
                         <?php if ($user['ruolo'] === 'admin'): ?>
                             <a href="admin" class="btn btn-warning btn-sm mt-2 w-100">Amministrazione</a>
                         <?php endif; ?>
@@ -74,8 +74,8 @@ $conn->close();
 
                     <div class="d-flex justify-content-center gap-4 my-4">
                         <a href="gestione_utenti" class="btn btn-page btn-lg px-5 py-3">Gestione Utenti</a>
-                        <a href="admin_articoli" class="btn btn-page btn-lg px-5 py-3">Gestione Articoli</a>
-                        <a href="admin_report" class="btn btn-page btn-lg px-5 py-3">Gestione Report</a>
+                        <a href="gestione_articoli" class="btn btn-page btn-lg px-5 py-3">Gestione Articoli</a>
+                        <a href="gestione_report" class="btn btn-page btn-lg px-5 py-3">Gestione Report</a>
                     </div>  
 
                     <a href="index" class="btn btn-secondary">Torna alla pagina principale</a>

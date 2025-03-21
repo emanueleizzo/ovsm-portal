@@ -15,6 +15,14 @@ $stmt->execute();
 $result = $stmt->get_result();
 $user = $result->fetch_assoc();
 $stmt->close();
+
+$user_id = $_SESSION['user_id'];
+$stmt = $conn->prepare("SELECT nome, cognome, email, foto_profilo FROM utenti WHERE id = ?");
+$stmt->bind_param("i", $user_id);
+$stmt->execute();
+$result = $stmt->get_result();
+$utente = $result->fetch_assoc();
+$stmt->close();
 $conn->close();
 ?>
 
@@ -69,8 +77,17 @@ $conn->close();
                 </nav>
 
                 <!-- Contenuto principale -->
-                <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4 d-flex align-items-center justify-content-center position-relative">
+                <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4 d-flex-inline align-items-center justify-content-center position-relative my-5">
+                    <h1>Profilo Utente</h1>
                     
+                    <div class="profilo-container">
+                        <img src="uploads/<?php echo htmlspecialchars($utente['foto_profilo'] ?: 'default.jpg'); ?>" alt="Foto Profilo" class="img-fluid rounded-circle" style="width: 400px; height: 400px;">
+                        <p><h2>Nome:</h2> <?php echo htmlspecialchars($utente['nome']); ?></p>
+                        <p><h2>Cognome:</h2> <?php echo htmlspecialchars($utente['cognome']); ?></p>
+                        <p><h2>Email:</h2> <?php echo htmlspecialchars($utente['email']); ?></p>
+                    </div>
+
+                    <a href="index" class="btn btn-secondary">Torna alla home</a>
                 </main>
             </div>
         </div>
