@@ -33,40 +33,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $stmt->close();
     $conn->close();
 }
+
+include 'head.html';
 ?>
-
-<!DOCTYPE html>
-<html>
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <meta name="description" content="Portale dedicato all'agenzia O.V.M.S. per gli eventi di Omega">
-        <meta name="keywords" content="OVMS, O.V.M.S., ovms">
-        <meta name="author" content="Emanuele Izzo">
-        
-        <title>Sodalitas Quaerito</title>
-
-        <!-- Open Graph per condivisione social -->
-        <meta property="og:title" content="Sodalitas Quaerito">
-        <meta property="og:description" content="Portale dedicato all'agenzia O.V.M.S. per gli eventi di Omega">
-        <meta property="og:image" content="URL dell'immagine di anteprima">
-        <meta property="og:url" content="http://www.ovms-portal.com">
-        <meta property="og:type" content="website">
-
-        <!-- Favicon -->
-        <link rel="icon" type="image/png" href="images/logo.png">
-        
-        <!-- Fogli di stile -->
-        <link rel="stylesheet" href="css/style.css">
-
-        <!-- Script Javascript -->
-        <script>
-            function showError(message) {
-                alert(message);
-            }
-        </script>
-    </head>
     <body>
         <div class="login-container">
             <div class="login-header">

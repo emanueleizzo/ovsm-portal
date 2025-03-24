@@ -95,34 +95,10 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['delete_user'])) {
     header("Location: admin_persone");
     exit;
 }
+
+include 'head.html';
 ?>
-
-<!DOCTYPE html>
-    <html lang="it">
-    <head>
-    <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <meta name="description" content="Portale dedicato all'agenzia O.V.M.S. per gli eventi di Omega">
-        <meta name="keywords" content="OVMS, O.V.M.S., ovms">
-        <meta name="author" content="Emanuele Izzo">
-        
-        <title>Sodalitas Quaerito</title>
-
-        <!-- Open Graph per condivisione social -->
-        <meta property="og:title" content="Sodalitas Quaerito">
-        <meta property="og:description" content="Portale dedicato all'agenzia O.V.M.S. per gli eventi di Omega">
-        <meta property="og:image" content="URL dell'immagine di anteprima">
-        <meta property="og:url" content="http://www.ovms-portal.com">
-        <meta property="og:type" content="website">
-
-        <!-- Favicon -->
-        <link rel="icon" type="image/png" href="favicon.png">
-        
-        <!-- Bootstrap CSS -->
-        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-        <link rel="stylesheet" href="css/style.css">
-        
+    <body>
         <script>
             function confermaEliminazione() {
                 if (confirm("Sei sicuro di voler eliminare questo utente?")) {
@@ -130,9 +106,6 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['delete_user'])) {
                 }
             }
         </script>
-    </head>
-    <body>
-
         <div class="container-fluid">
             <div class="row">
                 <!-- Sidebar -->

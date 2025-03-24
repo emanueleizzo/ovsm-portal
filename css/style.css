@@ -61,7 +61,22 @@ button:hover {
     background: #005fa3;
 }
 
-.sidebar, .user-box {
+.sidebar {
+    min-height: 100vh; /* Assicura che almeno occupi tutta l'altezza dello schermo */
+    height: auto; /* Permette di allungarsi se il contenuto cresce */
+    width: 250px; /* Larghezza fissa della sidebar */
+    overflow-y: auto; /* Aggiunge uno scroll interno se necessario */
+    position: fixed;
+    top: 0;
+    left: 0;
+    color: #fff;
+    padding: 20px;
+    background: #1c2b3a !important;
+    border-radius: 5px;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5);
+}
+
+.user-box {
     color: #fff;
     padding: 20px;
     background: #1c2b3a !important;
@@ -84,4 +99,16 @@ button:hover {
     --bs-btn-disabled-bg: #1c2b3a;
     border-radius: 5px;
     box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5);
+}
+
+.scrollable-text {
+    max-height: 700px; /* Altezza massima della box */
+    overflow-y: auto;  /* Scroll verticale */
+    color: #fff;
+    padding: 20px;
+    background: #1c2b3a !important;
+    border-radius: 5px;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5);
+    text-align: left;
+    font-size: medium;
 }

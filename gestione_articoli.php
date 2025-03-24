@@ -15,48 +15,16 @@ $stmt->execute();
 $result = $stmt->get_result();
 $user = $result->fetch_assoc();
 $stmt->close();
+$conn->close();
 
 if ($user['ruolo'] !== 'admin') {
     header("Location: index");
     exit();
 }
 
-// Recupero tutti gli utenti
-$stmt = $conn->prepare("SELECT id, nome, cognome, foto_profilo, email, ruolo FROM utenti");
-$stmt->execute();
-$utenti_result = $stmt->get_result();
-$stmt->close();
-$conn->close();
+include 'head.html';
 ?>
-
-<!DOCTYPE html>
-    <html lang="it">
-    <head>
-    <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <meta name="description" content="Portale dedicato all'agenzia O.V.M.S. per gli eventi di Omega">
-        <meta name="keywords" content="OVMS, O.V.M.S., ovms">
-        <meta name="author" content="Emanuele Izzo">
-        
-        <title>Sodalitas Quaerito</title>
-
-        <!-- Open Graph per condivisione social -->
-        <meta property="og:title" content="Sodalitas Quaerito">
-        <meta property="og:description" content="Portale dedicato all'agenzia O.V.M.S. per gli eventi di Omega">
-        <meta property="og:image" content="URL dell'immagine di anteprima">
-        <meta property="og:url" content="http://www.ovms-portal.com">
-        <meta property="og:type" content="website">
-
-        <!-- Favicon -->
-        <link rel="icon" type="image/png" href="favicon.png">
-        
-        <!-- Bootstrap CSS -->
-        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-        <link rel="stylesheet" href="css/style.css">
-    </head>
     <body>
-
         <div class="container-fluid">
             <div class="row">
                 <!-- Sidebar -->
@@ -81,20 +49,20 @@ $conn->close();
 
                 <!-- Contenuto principale -->
                 <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4 d-flex-inline align-items-center justify-content-center position-relative my-5">
-                    <div class="container mt-5">
+                    <div class="container">
                         <h1>Gestione Articoli</h1>
-                        
+
+                        <!-- Bottone per aggiungere nuovo articolo -->
+                        <a href="crea_articolo" class="btn btn-primary mb-3">Aggiungi Articolo</a>
+
                         <!-- Sezione per gli articoli -->
                         <div id="articoli-container" class="row">
                             <!-- Gli articoli saranno caricati dinamicamente qui -->
                         </div>
 
-                        <!-- Bottone per aggiungere nuovo articolo -->
-                        <a href="crea_articolo.php" class="btn btn-primary">Aggiungi Articolo</a>
-
                         <!-- Navigazione paginazione -->
-                        <nav id="pagination" class="mt-4">
-                            <ul class="pagination">
+                        <nav id="pagination" class="mb-3">
+                            <ul class="pagination align-items-center justify-content-center">
                                 <!-- Pagine saranno caricate dinamicamente -->
                             </ul>
                         </nav>
@@ -115,12 +83,12 @@ $conn->close();
                                         // Carica gli articoli nella pagina
                                         data.articoli.forEach(function(articolo) {
                                             articoliHtml += `
-                                                <div class="col-md-4 mb-4">
-                                                    <div class="card">
+                                                <div class="col-md-3 mb-3">
+                                                    <div class="card align-items-center p-3 user-box">
                                                         <div class="card-body">
                                                             <h5 class="card-title">${articolo.titolo}</h5>
                                                             <p class="card-text">${articolo.sinossi}</p>
-                                                            <a href="modifica_articolo.php?id=${articolo.id}" class="btn btn-primary">Modifica</a>
+                                                            <a href="modifica_articolo?id=${articolo.id}" class="btn btn-primary">Modifica</a>
                                                         </div>
                                                     </div>
                                                 </div>

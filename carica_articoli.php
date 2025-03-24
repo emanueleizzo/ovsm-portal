@@ -3,7 +3,7 @@
 include('db_connection.php');
 
 // Imposta il numero di articoli per pagina
-$perPagina = 10;
+$perPagina = 12;
 $pagina = isset($_GET['pagina']) ? (int)$_GET['pagina'] : 1;
 $offset = ($pagina - 1) * $perPagina;
 
