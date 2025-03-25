@@ -51,14 +51,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     }
 
     // Inserisci articolo nel database
-    $sql = "INSERT INTO articoli (titolo, sinossi, testo, immagine, autore_id) VALUES (?, ?, ?, ?, ?)";
+    $sql = "INSERT INTO reports (titolo, sinossi, testo, immagine, autore_id) VALUES (?, ?, ?, ?, ?)";
     $stmt = $conn->prepare($sql);
     $stmt->bind_param("ssssi", $titolo, $sinossi, $testo, $$_FILES["immagine"]["name"], $_SESSION['user_id']);
     if ($stmt->execute()) {
-        header("Location: gestione_articoli?success=1");
+        header("Location: profilo?success=1");
         exit();
     } else {
-        echo "Errore nell'inserimento dell'articolo.";
+        echo "Errore nell'inserimento del report.";
     }
 }
 
@@ -93,9 +93,9 @@ include 'head.html';
                 <!-- Contenuto principale -->
                 <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4 d-flex-inline align-items-center justify-content-center position-relative my-5">
                     <div class="container">
-                        <h1>Inserimento articolo</h1>
+                        <h1>Inserimento Report</h1>
 
-                        <form action="crea_articolo" method="POST" enctype="multipart/form-data" class="my-3">
+                        <form action="crea_report" method="POST" enctype="multipart/form-data" class="my-3">
                             <div class="form-group">
                                 <label class="form-label" for="titolo">Titolo</label>
                                 <input type="text" class="form-control" id="titolo" name="titolo" required>
@@ -107,7 +107,7 @@ include 'head.html';
                             </div>
 
                             <div class="form-group">
-                                <label class="form-label" for="testo">Testo dell'Articolo</label><br>
+                                <label class="form-label" for="testo">Testo del Report</label><br>
                                 <textarea id="testo" class="form-control mb-2" name="testo"></textarea>
                             </div>
 
@@ -116,7 +116,7 @@ include 'head.html';
                                 <input type="file" class="form-control-file" id="immagine" name="immagine">
                             </div>
 
-                            <button type="submit" class="btn btn-primary">Pubblica Articolo</button>
+                            <button type="submit" class="btn btn-primary">Inserisci Report</button>
                         </form>
                     </div>
 
@@ -132,7 +132,7 @@ include 'head.html';
                         });
                     </script>
                     
-                    <a href="gestione_articoli" class="btn btn-secondary">Torna alla pagina di amministrazione</a>
+                    <a href="profilo" class="btn btn-secondary">Torna al profilo</a>
                 </main>
             </div>
         </div>

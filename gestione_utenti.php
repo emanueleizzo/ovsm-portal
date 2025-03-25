@@ -61,24 +61,76 @@ include 'head.html';
                     <a href="aggiungi_utente" class="btn btn-primary mb-4">Aggiungi Nuovo Utente</a>
                     
                     <!-- Tabella degli utenti -->
-                    <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4">
-                        <?php while ($user = $utenti_result->fetch_assoc()): ?>
-                        <div class="col mb-4">
-                            <div class="card align-items-center p-3 user-box">
-                                <img src="<?php echo "uploads/".$user['foto_profilo']; ?>" class="img-fluid rounded-circle" style="width: 100px; height: 100px;" alt="Foto di <?php echo htmlspecialchars($user['nome']); ?>">
-                                <div class="card-body">
-                                    <h5 class="card-title"><?php echo htmlspecialchars($user['nome']) . ' ' . htmlspecialchars($user['cognome']); ?></h5>
-                                    <p class="card-text m-0"><strong>Email:</strong> <?php echo htmlspecialchars($user['email']); ?></p>
-                                    <p class="card-text"><strong>Ruolo:</strong> <?php echo htmlspecialchars($user['ruolo']); ?></p>
-                                    <div class="d-flex justify-content-center">
-                                        <a href="modifica_utente?id=<?php echo $user['id']; ?>" class="btn btn-primary btn-sm">Modifica</a>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <?php endwhile; ?>
+                    <div id="utenti-container" class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4">
                     </div>
+
+                    <!-- Navigazione paginazione -->
+                    <nav id="pagination" class="mb-3">
+                        <ul class="pagination align-items-center justify-content-center">
+                            <!-- Pagine saranno caricate dinamicamente -->
+                        </ul>
+                    </nav>
                     
+                    <script>
+                        $(document).ready(function() {
+                            // Funzione per caricare gli articoli tramite AJAX
+                            function caricaUtenti(pagina) {
+                                $.ajax({
+                                    url: 'carica_utenti.php', // Script che carica gli articoli
+                                    method: 'GET',
+                                    data: { pagina: pagina },
+                                    success: function(response) {
+                                        const data = JSON.parse(response);
+                                        let utentiHtml = '';
+
+                                        // Carica gli articoli nella pagina
+                                        data.utenti.forEach(function(utente) {
+                                            utentiHtml += `
+                                                <div class="col mb-4">
+                                                    <div class="card align-items-center p-3 user-box">
+                                                        <img src="uploads/`+utente.foto_profilo+`" class="img-fluid rounded-circle" style="width: 100px; height: 100px;" alt="Foto di ${utente.nome} ${utente.cognome}">
+                                                        <div class="card-body">
+                                                            <h5 class="card-title">${utente.nome} ${utente.cognome}</h5>
+                                                            <p class="card-text m-0"><strong>Email:</strong> ${utente.email}</p>
+                                                            <p class="card-text"><strong>Ruolo:</strong> ${utente.ruolo}</p>
+                                                            <div class="d-flex justify-content-center">
+                                                                <a href="modifica_utente?id=${utente.id}" class="btn btn-primary btn-sm">Modifica</a>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>  
+                                            `;
+                                        });
+
+                                        // Mostra gli articoli nella pagina
+                                        $('#utenti-container').html(utentiHtml);
+
+                                        // Paginazione
+                                        let paginationHtml = '';
+                                        for (let i = 1; i <= data.paginas; i++) {
+                                            paginationHtml += `<li class="page-item ${i === data.pagina ? 'active' : ''}">
+                                                                <a class="page-link" href="#" data-pagina="${i}">${i}</a>
+                                                            </li>`;
+                                        }
+
+                                        // Mostra la paginazione
+                                        $('#pagination .pagination').html(paginationHtml);
+                                    }
+                                });
+                            }
+
+                            // Carica i primi articoli (pagina 1)
+                            caricaUtenti(1);
+
+                            // Cambia pagina
+                            $(document).on('click', '.page-link', function(e) {
+                                e.preventDefault();
+                                const pagina = $(this).data('pagina');
+                                caricaUtenti(pagina);
+                            });
+                        });
+                    </script>
+
                     <a href="admin" class="btn btn-secondary">Torna alla pagina di amministrazione</a>
                 </main>
             </div>

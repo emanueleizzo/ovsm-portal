@@ -49,17 +49,26 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['modifica'])) {
 
     // Gestione upload immagine
     if (!empty($_FILES["immagine"]["name"])) {
-        $targetDir = "uploads/";
-        $fileName = basename($_FILES["immagine"]["name"]);
-        $targetFilePath = $targetDir . $fileName;
-        $fileType = pathinfo($targetFilePath, PATHINFO_EXTENSION);
+        $target_dir = "uploads/"; // Cartella dove salvare le immagini
+        $file_extension = strtolower(pathinfo($_FILES["immagine"]["name"], PATHINFO_EXTENSION));
+        $target_file = $target_dir . $_FILES["immagine"]["name"];
 
-        // Estensioni consentite
-        $allowTypes = ['jpg', 'jpeg', 'png', 'gif'];
-        if (in_array(strtolower($fileType), $allowTypes)) {
-            if (move_uploaded_file($_FILES["immagine"]["tmp_name"], $targetFilePath)) {
-                $immagine = $fileName;
-            }
+        // Controllo validità del file (tipo e dimensione)
+        $allowed_extensions = ['jpg', 'jpeg', 'png', 'gif'];
+        if (!in_array($file_extension, $allowed_extensions)) {
+            die("Errore: formato immagine non valido.");
+        }
+
+        if ($_FILES["immagine"]["size"] > 5000000) { // 5MB limite
+            die("Errore: immagine troppo grande.");
+        }
+
+        // Salva il file nella cartella 'uploads'
+        if (move_uploaded_file($_FILES["immagine"]["tmp_name"], $target_file)) {
+            echo "Immagine caricata con successo.";
+            $immagine = $_FILES["immagine"]["name"];
+        } else {
+            die("Errore nel caricamento dell'immagine.");
         }
     }
 

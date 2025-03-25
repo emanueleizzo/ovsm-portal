@@ -46,7 +46,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['old_password'], $_POST
             // Invio della notifica via email
             $subject = "Cambio Password - Sodalitas Quaerito";
             $message = "Ciao " . $utente['nome'] . ",\n\nLa tua password è stata cambiata con successo. Se non sei stato tu, contatta immediatamente il supporto.";
-            $headers = "From: no-reply@yourdomain.com";
+            $headers = "From: emanuele.izzo_1998@outlook.it";
 
             mail($utente['email'], $subject, $message, $headers);
 
@@ -89,36 +89,116 @@ include 'head.html';
             <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4 d-flex-inline align-items-center justify-content-center position-relative my-5">
                 <h1>Profilo Utente</h1>
                 
-                <div class="profilo-container row justify-content-center mb-3">
-                    <img src="uploads/<?php echo htmlspecialchars($utente['foto_profilo'] ?: 'default.jpg'); ?>" alt="Foto Profilo" class="img-fluid rounded-circle col-3" style="width: 350px; height: 350px;">
-                    <div class="col-3">
-                        <p><h2>Nome:</h2> <?php echo htmlspecialchars($utente['nome']); ?></p>
-                        <p><h2>Cognome:</h2> <?php echo htmlspecialchars($utente['cognome']); ?></p>
-                        <p><h2>Email:</h2> <?php echo htmlspecialchars($utente['email']); ?></p>
+                <div class="row justify-content-around">
+                    <div class="col-5">
+                        <h2>Informazioni</h2>
+
+                        <div class="profilo-container row justify-content-center mb-3">
+                            <img src="uploads/<?php echo htmlspecialchars($utente['foto_profilo'] ?: 'default.jpg'); ?>" alt="Foto Profilo" class="img-fluid rounded-circle col-5" style="width: 300px; height: 300px;">
+                            <div class="col-6 justify-content-center align-items-center">
+                                <p><h2>Nome:</h2> <?php echo htmlspecialchars($utente['nome']); ?></p>
+                                <p><h2>Cognome:</h2> <?php echo htmlspecialchars($utente['cognome']); ?></p>
+                                <p><h2>Email:</h2> <?php echo htmlspecialchars($utente['email']); ?></p>
+                            </div>
+                        </div>
+
+                        <hr class="text-light">
+
+                        <!-- Modifica password -->
+                        <h2>Modifica la tua password</h2>
+                        <?php if (isset($success_message)) { echo "<div class='alert alert-success'>$success_message</div>"; } ?>
+                        <?php if (isset($error_message)) { echo "<div class='alert alert-danger'>$error_message</div>"; } ?>
+                        <form method="POST" action="">
+                            <div class="mb-3">
+                                <label for="old_password" class="form-label">Vecchia Password</label>
+                                <input type="password" class="form-control" id="old_password" name="old_password" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="new_password" class="form-label">Nuova Password</label>
+                                <input type="password" class="form-control" id="new_password" name="new_password" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="confirm_password" class="form-label">Conferma Nuova Password</label>
+                                <input type="password" class="form-control" id="confirm_password" name="confirm_password" required>
+                            </div>
+                            <button type="submit" class="btn btn-primary">Modifica Password</button>
+                        </form>
                     </div>
+
+                    <div class="col-6 justify-content-center align-items-center">
+                        <h2>Report</h2>
+
+                        <a href="crea_report" class="btn btn-primary mb-3">Aggiungi report</a>
+                        
+                        <!-- Sezione per gli articoli -->
+                        <div id="reports-container" class="row">
+                            <!-- Gli articoli saranno caricati dinamicamente qui -->
+                        </div>
+
+                        <!-- Navigazione paginazione -->
+                        <nav id="pagination" class="mb-3">
+                            <ul class="pagination align-items-center justify-content-center">
+                                <!-- Pagine saranno caricate dinamicamente -->
+                            </ul>
+                        </nav>
+                    </div>
+
+                    <script>
+                        $(document).ready(function() {
+                            // Funzione per caricare gli articoli tramite AJAX
+                            function caricaReports(pagina) {
+                                $.ajax({
+                                    url: 'carica_reports.php', // Script che carica gli articoli
+                                    method: 'GET',
+                                    data: { pagina: pagina },
+                                    success: function(response) {
+                                        const data = JSON.parse(response);
+                                        let reportsHtml = '';
+
+                                        // Carica gli articoli nella pagina
+                                        data.reports.forEach(function(report) {
+                                            reportsHtml += `
+                                                <div class="col-md-6 mb-3">
+                                                    <div class="card align-items-center p-3 user-box">
+                                                        <div class="card-body">
+                                                            <h5 class="card-title">${report.titolo}</h5>
+                                                            <p class="card-text">${report.sinossi}</p>
+                                                            <a href="modifica_report?id=${report.id}" class="btn btn-primary">Modifica</a>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            `;
+                                        });
+
+                                        // Mostra gli articoli nella pagina
+                                        $('#reports-container').html(reportsHtml);
+
+                                        // Paginazione
+                                        let paginationHtml = '';
+                                        for (let i = 1; i <= data.paginas; i++) {
+                                            paginationHtml += `<li class="page-item ${i === data.pagina ? 'active' : ''}">
+                                                                <a class="page-link" href="#" data-pagina="${i}">${i}</a>
+                                                            </li>`;
+                                        }
+
+                                        // Mostra la paginazione
+                                        $('#pagination .pagination').html(paginationHtml);
+                                    }
+                                });
+                            }
+
+                            // Carica i primi articoli (pagina 1)
+                            caricaReports(1);
+
+                            // Cambia pagina
+                            $(document).on('click', '.page-link', function(e) {
+                                e.preventDefault();
+                                const pagina = $(this).data('pagina');
+                                caricaReports(pagina);
+                            });
+                        });
+                    </script>
                 </div>
-
-                <hr class="text-light">
-
-                <!-- Modifica password -->
-                <h2>Modifica la tua password</h2>
-                <?php if (isset($success_message)) { echo "<div class='alert alert-success'>$success_message</div>"; } ?>
-                <?php if (isset($error_message)) { echo "<div class='alert alert-danger'>$error_message</div>"; } ?>
-                <form method="POST" action="">
-                    <div class="mb-3">
-                        <label for="old_password" class="form-label">Vecchia Password</label>
-                        <input type="password" class="form-control" id="old_password" name="old_password" required>
-                    </div>
-                    <div class="mb-3">
-                        <label for="new_password" class="form-label">Nuova Password</label>
-                        <input type="password" class="form-control" id="new_password" name="new_password" required>
-                    </div>
-                    <div class="mb-3">
-                        <label for="confirm_password" class="form-label">Conferma Nuova Password</label>
-                        <input type="password" class="form-control" id="confirm_password" name="confirm_password" required>
-                    </div>
-                    <button type="submit" class="btn btn-primary">Modifica Password</button>
-                </form>
 
                 <hr class="text-light">
 
