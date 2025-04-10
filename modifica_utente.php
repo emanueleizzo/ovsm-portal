@@ -22,17 +22,14 @@ if (!isset($_GET['id']) || empty($_GET['id'])) {
 }
 $user_id = intval($_GET['id']);
 
-// Recupera i dati dell'utente dal database
-$query = "SELECT * FROM utenti WHERE id = ?";
+// Recupera i dati dell'utente da modificare dal database
+$query = "SELECT id, username, foto_profilo, nome, cognome, email FROM utenti WHERE id = ?";
 $stmt = $conn->prepare($query);
 $stmt->bind_param("i", $user_id);
 $stmt->execute();
 $result = $stmt->get_result();
-
-if ($result->num_rows === 0) {
-    die("Utente non trovato.");
-}
-$user = $result->fetch_assoc();
+$user_modify = $result->fetch_assoc();
+$stmt->close();
 
 // Aggiornamento dati utente
 if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['update_user'])) {
@@ -72,7 +69,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['reset_password'])) {
     $new_password = bin2hex(random_bytes(4)); // Genera una password casuale
     $hashed_password = password_hash($new_password, PASSWORD_DEFAULT);
     
-    $update_pass_query = "UPDATE utenti SET password = ? WHERE id = ?";
+    $update_pass_query = "UPDATE utenti SET password_hash = ? WHERE id = ?";
     $stmt = $conn->prepare($update_pass_query);
     $stmt->bind_param("si", $hashed_password, $user_id);
     $stmt->execute();
@@ -80,8 +77,8 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['reset_password'])) {
     // Invia email con la nuova password
     $to = $user['email'];
     $subject = "Nuova Password";
-    $message = "Ciao " . $user['nome'] . ",\n\nLa tua nuova password è: " . $new_password . "\n\nUsername: " . $user['email'];
-    $headers = "From: no-reply@tuosito.com";
+    $message = "Ciao " . $user['nome'] . ",\n\nLa tua nuova password è: " . $new_password . "\n\nUsername: " . $user['nome'] . "." . $user['cognome'];
+    $headers = "From: no-reply@sodalidasquaerito.org";
     mail($to, $subject, $message, $headers);
     
     header("Location: modifica_utente.php?id=$user_id&password_reset=1");
@@ -133,13 +130,13 @@ include 'head.html';
                     <h1>Modifica Utente</h1>
                     <form method="POST">
                         <label class="form-label">Nome:</label>
-                        <input class="form-control" type="text" name="nome" value="<?php echo htmlspecialchars($user['nome']); ?>" required>
+                        <input class="form-control" type="text" name="nome" value="<?php echo htmlspecialchars($user_modify['nome']); ?>" required>
                         
                         <label class="form-label">Cognome:</label>
-                        <input class="form-control" type="text" name="cognome" value="<?php echo htmlspecialchars($user['cognome']); ?>" required>
+                        <input class="form-control" type="text" name="cognome" value="<?php echo htmlspecialchars($user_modify['cognome']); ?>" required>
                         
                         <label class="form-label">Email:</label>
-                        <input class="form-control" type="email" name="email" value="<?php echo htmlspecialchars($user['email']); ?>" required>
+                        <input class="form-control" type="email" name="email" value="<?php echo htmlspecialchars($user_modify['email']); ?>" required>
                         
                         <button type="submit" class="btn btn-primary" name="update_user">Aggiorna Dati</button>
                     </form>
@@ -147,7 +144,7 @@ include 'head.html';
                     <hr class="text-light">
 
                     <h3>Foto Profilo</h3>
-                    <img src="uploads/<?php echo htmlspecialchars($user['foto_profilo']); ?>" class="img-fluid rounded-circle mb-3" style="width: 150px; height: 150px;">
+                    <img src="uploads/<?php echo htmlspecialchars($user_modify['foto_profilo']); ?>" class="img-fluid rounded-circle mb-3" style="width: 150px; height: 150px;">
                     <form method="POST" enctype="multipart/form-data">
                         <input class="form-control" type="file" name="foto_profilo" required>
                         <button type="submit" class="btn btn-primary" name="update_image">Aggiorna Immagine</button>
@@ -159,6 +156,7 @@ include 'head.html';
                         <div class="col-6">
                             <h3>Reset Password</h3>
                             <form method="POST">
+                                <input type="hidden" name="id" value="<?php echo htmlspecialchars($user_modify['id']); ?>">
                                 <button type="submit" class="btn btn-warning" name="reset_password">Genera Nuova Password</button>
                             </form>
                         </div>
@@ -166,7 +164,7 @@ include 'head.html';
                         <div class="col-6">
                             <h3>Eliminazione Utente</h3>
                             <form id="deleteForm" method="post">
-                                <input type="hidden" name="delete_user" value="1">
+                            <input type="hidden" name="id" value="<?php echo htmlspecialchars($user_modify['id']); ?>">
                                 <button type="button" class="btn btn-danger" onclick="confermaEliminazione()">Elimina Utente</button>
                             </form>
                         </div>
@@ -181,5 +179,11 @@ include 'head.html';
 
         <!-- Bootstrap JS -->
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+        <?php if (isset($_GET['password_reset']) && $_GET['password_reset'] == 1) { ?>
+            <script>
+                alert("Password modificata con successo!");
+            </script>
+        <?php } ?>
     </body>
 </html>
